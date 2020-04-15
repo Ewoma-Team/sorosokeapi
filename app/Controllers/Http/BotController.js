@@ -16,6 +16,11 @@ class BotController {
     async chat({request, response, data}) {
         console.log('chat:', data)//This is the data from socket.io
 
+        return response.status(200).json({
+            'message': 'successfull',
+            'chat': data 
+        })
+
     }
 
     async saveChat({text}) {
