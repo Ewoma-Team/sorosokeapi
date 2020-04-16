@@ -4,13 +4,12 @@ const BotController = use('App/Controllers/Http/BotController')
 
 io.on('connection', function (socket) {
   console.log(socket.id)
-  socket.on('bot_chat', (data) => {
+  socket.on('bot_chat', async (data) => {
 
       const botController = new BotController
-      let response = botController.chat({data})
-      if(response) {
-        io.emit('bot-chat', response);
-      }
+      let response = await botController.chat({data})
+      console.log('pass', response)
+      io.emit('bot-chat', response);
   });
 })
 
