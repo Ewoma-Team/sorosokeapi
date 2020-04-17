@@ -7,8 +7,8 @@ const Env = use('Env')
 const Helpers = use('Helpers')
 
 //This is for heroku hsting remove it for yu local connection
-const Url = require('url-parse')
-const CLEARDB_DATABASE_URL = new Url(Env.get('CLEARDB_DATABASE_URL'))
+// const Url = require('url-parse')
+// const CLEARDB_DATABASE_URL = new Url(Env.get('CLEARDB_DATABASE_URL'))
 
 module.exports = {
   /*
@@ -54,20 +54,20 @@ module.exports = {
   */
   mysql: {
     client: 'mysql',
-    // connection: {
-    //   host: Env.get('DB_HOST', 'localhost'),
-    //   port: Env.get('DB_PORT', ''),
-    //   user: Env.get('DB_USER', 'root'),
-    //   password: Env.get('DB_PASSWORD', ''),
-    //   database: Env.get('DB_DATABASE', 'adonis')
-    // },
     connection: {
-        host: CLEARDB_DATABASE_URL.host,
-        port: '',
-        user: CLEARDB_DATABASE_URL.username,
-        password: CLEARDB_DATABASE_URL.password,
-        database: CLEARDB_DATABASE_URL.pathname.substr(1)
+      host: Env.get('DB_HOST', 'localhost'),
+      port: Env.get('DB_PORT', ''),
+      user: Env.get('DB_USER', 'root'),
+      password: Env.get('DB_PASSWORD', ''),
+      database: Env.get('DB_DATABASE', 'adonis')
     },
+    // connection: {
+    //     host: CLEARDB_DATABASE_URL.host,
+    //     port: '',
+    //     user: CLEARDB_DATABASE_URL.username,
+    //     password: CLEARDB_DATABASE_URL.password,
+    //     database: CLEARDB_DATABASE_URL.pathname.substr(1)
+    // },
     debug: Env.get('DB_DEBUG', false)
   },
 
