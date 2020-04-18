@@ -50,6 +50,7 @@ class BotController {
                 return JSON.stringify({
                     'message': 'successful',
                     'status': 200,
+                    'device_id': data.device_id,
                     'chat-info': result
                 })
          
