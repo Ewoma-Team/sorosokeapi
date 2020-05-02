@@ -8,14 +8,12 @@ const Bot = use('App/Models/Bot')
 const Database = use('Database')
 const axios = use('axios')
 const Env = use('Env')
+const DialogFlowController = use('App/Controllers/Http/DialogFlowController')
 
 
 class BotController {
-    async index({ response }) {
 
-    }
-
-    async chat({ request, response, data }) {
+    async v1Bot({ request, response, data }) {
         console.log('chat:', data)//This is the data from socket.io
         let result = null;
 
