@@ -58,6 +58,29 @@ class BotController {
 
     }
 
+    async v2Bot({ request, response, data }) {
+        console.log('chat:', data)//This is the data from socket.io
+        const text = data.message;
+        const sessionId = data.device_id;
+
+        const dialogFlowController = new DialogFlowController
+        
+        try{
+             const result = await dialogFlowController.trigger({text, sessionId})  
+             console.log(result)
+             return JSON.stringify({
+                'message': 'successful',
+                'status': 200,
+                'device_id': sessionId,
+                'chat_info': result
+            })
+        }catch(err) {
+            console.error('DialogFlow.sendTextMessageToDialogFlow ERROR:', err);
+            throw err
+        }
+    }
+
+
     async saveChat({ text }) {
 
     }

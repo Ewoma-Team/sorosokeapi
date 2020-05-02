@@ -16,7 +16,7 @@ class WebhookController {
             const sessionId = uuid.v4();
             console.log(Config.get('ewoma.private_key'));
 
-		let privateKey = (process.env.NODE_ENV=="production") ? JSON.parse(Config.get('ewoma.private_key')) : Config.get('ewoma.private_key')
+		let privateKey =  Config.get('ewoma.private_key')
 		let clientEmail = Config.get('ewoma.client_email')
 		let config = {
 			credentials: {
