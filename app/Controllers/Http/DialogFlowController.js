@@ -33,7 +33,7 @@ class DialogFlowController {
     async trigger({text, sessionId}) {
         console.log(text, sessionId)
         const projectId = Config.get('ewoma.project_id')
-		const privateKey = (process.env.NODE_ENV=="production") ? JSON.parse(Config.get('ewoma.private_key')) : Config.get('ewoma.private_key')
+		const privateKey = Config.get('ewoma.private_key')
         const clientEmail = Config.get('ewoma.client_email')
 
 		let config = {
