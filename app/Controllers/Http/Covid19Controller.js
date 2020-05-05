@@ -26,7 +26,7 @@ class Covid19Controller {
     async c19CurrentCountry({request, response, data}) {
         const url = `https://api.covid19api.com/summary`;
         let  output = {
-                    'message': `Please am sorry, i can't get you an adequate result on that, 
+                    'message': `Oh no!, I can't get you an adequate result on that, 
                                 it may look like your data (country or status) information are incorrect or does not exist, please check and try again!`,
                     'device_id': data.device_id,
                     'status': 400,
@@ -35,7 +35,6 @@ class Covid19Controller {
         try{
             const result = await axios.get(url);
             if(data.message.includes('/')) {
-                console.log('has /')
                 data.message = data.message.split('/').join("-");
                 console.log(data.message)
             }
@@ -72,30 +71,63 @@ class Covid19Controller {
         }
     }
 
-    async c19CountryAndStatus({ request, response, country, status, device_id}) {
-        console.log(country, status)
-
-        const url = `https://api.covid19api.com/dayone/country/${country}/status/${status}`;
-        
+    async c19DayOneCountry({ request, response, data}) {
+        console.log(data)
+        const url = `https://api.covid19api.com/dayone/country/${data.message.country}`;
+        let output = {
+                    'message': `Oh no!, I can't get you an adequate information on that, 
+                                it may look like your country name is incorrect or does not exist, 
+                                please visit country list to get correct country name and try again!`,
+                    'device_id': data.device_id,
+                    'status': 400,
+                }
         try{
             const result = await axios.get(url)
             console.log(result.data);
-            return JSON.stringify({
-                'message': 'api successful',
-                'status': 200,
-                'device_id': device_id,
-                'chat_info': result.data
-            })
-     
+            if(result.data){
+                output = {
+                    'message': 'api successful',
+                    'status': 200,
+                    'device_id': data.device_id,
+                    'dayone': result.data
+                }
+            }
             // return response.status(200).json(result.data)
         }catch (error) {
             console.error(error)
-            return response.status(500).json({
-                message: "An error occured",
-                error
-            })
         }
-    
+        return JSON.stringify(output)
+    }
+   
+    async c19DayOneCountryStatus({ request, response, data}) {
+        console.log(data)
+
+        const url = `https://api.covid19api.com/dayone/country/${data.message.country}/status/${data.message.status}`;
+        let output = {
+                'message': `Oh no!, I can't get you an adequate information on that, 
+                            it may look like your country name is incorrect or does not exist, 
+                            please visit country list to get correct country name and try again!`,
+                'device_id': data.device_id,
+                'status': 400,
+            }
+        try{
+            const result = await axios.get(url)
+            // console.log(result)
+            if(result.data){
+                output = {
+                    'message': 'api successful',
+                    'status': 200,
+                    'device_id': data.device_id,
+                    'dayone': result.data,
+                    'caseStatus': data.message.status.charAt(0).toUpperCase() + data.message.status.slice(1) 
+                }
+            }
+           
+            // return response.status(200).json(result.data)
+        }catch (error) {
+            console.error(error)
+        }
+        return JSON.stringify(output)
     }
 
 }

@@ -49,15 +49,26 @@ socket.on('c19-summary-countries', async (data) => {
     }
 });
 
-  // socket.on('covid19-api-country-status', async (data) => {
-  //   const covid19Controller = new Covid19Controller
-  //     try {
-  //       let response = await covid19Controller.c19CountryAndStatus({data})
-  //       console.log('covid-pass', response)
-  //       io.emit('covid19-api-country-status', response);
-  //     }catch(err){
-  //       console.log(err)
-  //     }
-  // });
+socket.on('c19-dayone-country', async (data) => {
+    const covid19Controller = new Covid19Controller
+      try {
+        let response = await covid19Controller.c19DayOneCountry({data})
+        io.emit('c19-dayone-country', response);
+      }catch(err){
+        console.log(err)
+      }
+  });
+socket.on('c19-dayone-country-status', async (data) => {
+    const covid19Controller = new Covid19Controller
+      try {
+        let response = await covid19Controller.c19DayOneCountryStatus({data})
+        console.log('llllll')
+        console.log(response)
+        console.log('--------')
+        io.emit('c19-dayone-country-status', response);
+      }catch(err){
+        console.log(err)
+      }
+  });
 })
 
