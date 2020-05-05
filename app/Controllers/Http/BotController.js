@@ -57,7 +57,6 @@ class BotController {
         }
 
     }
-
     async v2Bot({ request, response, data }) {
         console.log('chat:', data)//This is the data from socket.io
         const text = data.message;
@@ -79,8 +78,6 @@ class BotController {
             throw err
         }
     }
-
-
     async saveChat({ text }) {
 
     }
