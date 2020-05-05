@@ -17,33 +17,33 @@ io.on('connection', function (socket) {
         console.log(err)
       }
   });
-  socket.on('stat-c19-summary-global', async (data) => {
+  socket.on('c19-summary-global', async (data) => {
     console.log(data)
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19SummaryGlobal({data})
-        io.emit('stat-c19-summary-global', response);
+        io.emit('c19-summary-global', response);
       }catch(err){
         console.log(err)
       }
   });
-  socket.on('stat-c19-current-country', async (data) => {
+  socket.on('c19-current-country', async (data) => {
     console.log(data)
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19CurrentCountry({data})
-        io.emit('stat-c19-current-country', response);
+        io.emit('c19-current-country', response);
       }catch(err){
         console.log(err)
       }
   });
 
-socket.on('stat-c19-summary-countries', async (data) => {
+socket.on('c19-summary-countries', async (data) => {
   console.log(data)
   const covid19Controller = new Covid19Controller
     try {
       let response = await covid19Controller.c19SummaryCountries({data})
-      io.emit('stat-c19-summary-countries', response);
+      io.emit('c19-summary-countries', response);
     }catch(err){
       console.log(err)
     }
