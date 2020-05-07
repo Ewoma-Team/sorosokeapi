@@ -17,55 +17,53 @@ io.on('connection', function (socket) {
         console.log(err)
       }
   });
-  socket.on('c19-summary-global', async (data) => {
+  socket.on('summary-global', async (data) => {
     console.log(data)
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19SummaryGlobal({data})
-        io.emit('c19-summary-global', response);
+        io.emit('summary-global', response);
       }catch(err){
         console.log(err)
       }
   });
-  socket.on('c19-current-country', async (data) => {
+  socket.on('current-country', async (data) => {
     console.log(data)
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19CurrentCountry({data})
-        io.emit('c19-current-country', response);
+        io.emit('current-country', response);
       }catch(err){
         console.log(err)
       }
   });
 
-socket.on('c19-summary-countries', async (data) => {
+socket.on('summary-countries', async (data) => {
   console.log(data)
   const covid19Controller = new Covid19Controller
     try {
       let response = await covid19Controller.c19SummaryCountries({data})
-      io.emit('c19-summary-countries', response);
+      io.emit('summary-countries', response);
     }catch(err){
       console.log(err)
     }
 });
 
-socket.on('c19-dayone-country', async (data) => {
+socket.on('dayone-country', async (data) => {
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19DayOneCountry({data})
-        io.emit('c19-dayone-country', response);
+        io.emit('dayone-country', response);
       }catch(err){
         console.log(err)
       }
   });
-socket.on('c19-dayone-country-status', async (data) => {
+socket.on('dayone-country-status', async (data) => {
     const covid19Controller = new Covid19Controller
       try {
         let response = await covid19Controller.c19DayOneCountryStatus({data})
-        console.log('llllll')
         console.log(response)
-        console.log('--------')
-        io.emit('c19-dayone-country-status', response);
+        io.emit('dayone-country-status', response);
       }catch(err){
         console.log(err)
       }
