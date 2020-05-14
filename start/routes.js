@@ -21,4 +21,6 @@ Route.get('/', () => {
 })
 
 Route.get('test', 'WebhookController.trigger');
-Route.get('covid19/:country/:status', 'Covid19Controller.covid19CountryAndStatus')
+// Route.get('covid19/:country/:status', 'Covid19Controller.covid19CountryAndStatus')
+Route.post('c19/make-me-better', 'Covid19Controller.makeMeBetter')
+Route.post('c19/reachout', 'Covid19Controller.reachOut')

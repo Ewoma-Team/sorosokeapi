@@ -5,6 +5,8 @@
 
 const axios = use('axios')
 const Env = use('Env')
+const nodemailer = use('nodemailer');
+// const sgTransport =  use('nodemailer-sendgrid-transport');
 
 class Covid19Controller {
 
@@ -129,7 +131,91 @@ class Covid19Controller {
         }
         return JSON.stringify(output)
     }
+    async makeMeBetter({request, response}) {
 
+        const {questions} = request.post();
+
+        console.log('question', questions)
+       
+        let body = `<b>All Questions Submitted:</b> <br><br><br>`;
+        await questions.map((x, i) => {
+            body += `<b>(${i + 1})</b> ${x}<br>`;
+        });
+
+        const mailMessage = {
+            from: Env.get('EWOMA_EMAIL'),
+            to: Env.get('EWOMA_EMAIL'),
+            subject: 'Make Ewoma Better',
+            html: `<div>${body}</div>`
+        };
+       
+        let resp = await this.mailOut(mailMessage);
+
+        resp ? response.status(200).json({message: 'Successfully email sent!'}): null;
+
+        !resp ? response.status(502).json({message: 'Mail Not sent!'}): null;
+   
+    }
+    async reachOut({request, response}) {
+        const {subject, email, message} = request.post();
+
+        console.log(request.post())
+       
+        let body = `<b>Reach Out Mail From: (${email})</b> <br><br>
+                    <b>Subject: ${subject} </b><br><br>
+                        ${message}
+                    `;
+
+        const mailMessage = {
+            from: email,
+            to: Env.get('EWOMA_EMAIL'),
+            subject: 'Reach Out To Ewoma',
+            html: `<div>${body}</div>`
+        };
+       
+        let resp = await this.mailOut(mailMessage);
+        resp ? response.status(200).json({message: 'Successfully email sent!'}): null;
+
+        !resp ? response.status(502).json({message: 'Mail Not sent!'}): null;
+       
+    }
+
+    
+    async mailOut(mailMessage) {
+        return new Promise((resolve, reject) => {
+            const options = {
+                service: 'gmail',
+                auth: {
+                  user: Env.get('GMAIL_USER'),
+                  pass:  Env.get('GMAIL_PASS'),
+                }
+              }
+            try {
+                //Generate the client
+                const client = nodemailer.createTransport(options);
+                //Send the mail Trigger here
+                client.sendMail(mailMessage, function(err, info){
+                    if (err ){
+                    console.log(err);
+                        resolve(false)
+                    }
+                    else {
+                    console.log('Message sent: ' + info.response);
+                      resolve(true)
+                    }
+                });       	
+                client.close();
+                console.log('p')
+                
+            }catch (error) {
+    
+                response.status(501).json({
+                    message: 'An unexpected error occured when creating a customer.', 
+                    hint:  error.message
+                })
+            }
+        })
+    }
 }
 
 module.exports = Covid19Controller
