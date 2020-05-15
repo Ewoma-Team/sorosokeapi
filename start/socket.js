@@ -25,6 +25,7 @@ io.on('connection', function (socket) {
         io.emit('summary-global', response);
       }catch(err){
         console.log(err)
+        io.emit('current-country', {err, data});
       }
   });
   socket.on('current-country', async (data) => {
@@ -35,6 +36,7 @@ io.on('connection', function (socket) {
         io.emit('current-country', response);
       }catch(err){
         console.log(err)
+        io.emit('current-country', {err, data});
       }
   });
 
@@ -46,6 +48,7 @@ socket.on('summary-countries', async (data) => {
       io.emit('summary-countries', response);
     }catch(err){
       console.log(err)
+      io.emit('current-country', {err, data});
     }
 });
 
@@ -56,6 +59,7 @@ socket.on('dayone-country', async (data) => {
         io.emit('dayone-country', response);
       }catch(err){
         console.log(err)
+        io.emit('current-country', {err, data});
       }
   });
 socket.on('dayone-country-status', async (data) => {
@@ -66,6 +70,7 @@ socket.on('dayone-country-status', async (data) => {
         io.emit('dayone-country-status', response);
       }catch(err){
         console.log(err)
+        io.emit('current-country', {err, data});
       }
   });
 })

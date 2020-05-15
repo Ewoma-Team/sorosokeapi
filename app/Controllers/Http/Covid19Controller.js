@@ -23,6 +23,12 @@ class Covid19Controller {
             })
         }catch(e) {
             console.error(e)
+            let  output = {
+                'message': `Ooooops An error has occurred! there seems to be a network interference, please check and try again!`,
+                'device_id': data.device_id,
+                'status': 501,
+            }
+            return JSON.stringify(output)
         }
     }
     async c19CurrentCountry({request, response, data}) {
@@ -35,26 +41,31 @@ class Covid19Controller {
                 }
 
         try{
-            const result = await axios.get(url);
             if(data.message.includes('/')) {
                 data.message = data.message.split('/').join("-");
                 console.log(data.message)
             }
-            await result.data.Countries.map(x => {
-                if(x.Slug == data.message){
-                    console.log(x)
-                    output = {
-                        'message': 'api successful',
-                        'device_id': data.device_id,
-                        'country_summary': x,
-                        'status': 200,
+            const result = await axios.get(url);
+                await result.data.Countries.map(x => {
+                    if(x.Slug == data.message){
+                        console.log(x)
+                        output = {
+                            'message': 'api successful',
+                            'device_id': data.device_id,
+                            'country_summary': x,
+                            'status': 200,
+                        }
                     }
-                }
-            });
-    
+                });
             return JSON.stringify(output)
         }catch(e) {
             console.error(e)
+            let  output = {
+                'message': `Ooooops An error has occurred! there seems to be a network interference, please check and try again!`,
+                'device_id': data.device_id,
+                'status': 501,
+            }
+            return JSON.stringify(output)
         }
     }
     async c19SummaryCountries({request, response, data}) {
@@ -68,8 +79,14 @@ class Covid19Controller {
                 'countries': result.data.Countries,
                 'status': 200,
             })
-        }catch(e) {
+        }catch(e) {  
             console.error(e)
+            let  output = {
+                'message': `Ooooops An error has occurred! there seems to be a network interference, please check and try again!`,
+                'device_id': data.device_id,
+                'status': 501,
+            }
+            return JSON.stringify(output)
         }
     }
 
@@ -96,7 +113,13 @@ class Covid19Controller {
             }
             // return response.status(200).json(result.data)
         }catch (error) {
-            console.error(error)
+            console.error(e)
+            let  output = {
+                'message': `Ooooops An error has occurred! there seems to be a network interference, please check and try again!`,
+                'device_id': data.device_id,
+                'status': 501,
+            }
+            return JSON.stringify(output)
         }
         return JSON.stringify(output)
     }
@@ -127,17 +150,19 @@ class Covid19Controller {
            
             // return response.status(200).json(result.data)
         }catch (error) {
-            console.error(error)
+            console.error(e)
+            let  output = {
+                'message': `Ooooops An error has occurred! there seems to be a network interference, please check and try again!`,
+                'device_id': data.device_id,
+                'status': 501,
+            }
+            return JSON.stringify(output)
         }
         return JSON.stringify(output)
     }
     async makeMeBetter({request, response}) {
 
         const {questions} = request.post();
-
-        console.log(request.post())
-
-        console.log('question', questions)
        
         let body = `<b>All Questions Submitted:</b> <br><br><br>`;
         await questions.map((x, i) => {
@@ -160,9 +185,7 @@ class Covid19Controller {
     }
     async reachOut({request, response}) {
         const {subject, email, message} = request.post();
-
-        console.log(request.post())
-       
+        
         let body = `<b>Reach Out Mail From: (${email})</b> <br><br>
                     <b>Subject: ${subject} </b><br><br>
                         ${message}
