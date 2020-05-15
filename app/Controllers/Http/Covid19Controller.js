@@ -135,6 +135,8 @@ class Covid19Controller {
 
         const {questions} = request.post();
 
+        console.log(request.post())
+
         console.log('question', questions)
        
         let body = `<b>All Questions Submitted:</b> <br><br><br>`;
