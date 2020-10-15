@@ -25,12 +25,17 @@ class AuthenticateController {
     }
 
     async insertDatabase(result) {
+
         const {oauth_token, oauth_token_secret, user_id} = result.response;
+
         const {name, screen_name, location, verified, profile_image_url_https, description} = result.currentUser;
+
+        //Store to database
+
     }
 
     async generateAppAuthToken () {
-        console
+        console.log()
     }
 }
 
