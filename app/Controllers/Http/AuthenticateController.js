@@ -1,5 +1,6 @@
 'use strict'
 const TwitterLoginService = use('App/Services/Twitter/TwitterLogin')
+const User = use('App/Models/User')
 
 class AuthenticateController {
 
@@ -30,7 +31,14 @@ class AuthenticateController {
 
         const {name, screen_name, location, verified, profile_image_url_https, description} = result.currentUser;
 
+        const userData = {
+            
+        }
+
         //Store to database
+
+        await User.create(userData)
+
 
     }
 
