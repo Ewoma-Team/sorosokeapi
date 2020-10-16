@@ -20,6 +20,14 @@ class User extends Model {
       }
     })
   }
+  static get hidden () {
+      return ['oauth_token', 'oauth_token_secret']
+  }
+
+  
+  static get dateFormat () {
+    return 'YYYY-MM-DD HH:mm:ss'
+  }
 
   /**
    * A relationship on tokens is required for auth to

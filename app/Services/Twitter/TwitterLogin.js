@@ -55,9 +55,9 @@ module.exports = {
         //Get the Stroe request toke secret
         const result = await Cache.findBy('key', `token-${requestToken}`);
 
-        requestTokenSecret = result.value;
+        if(result) {
 
-        if(requestTokenSecret) {
+            requestTokenSecret = result.value;
             //Generate auth token for the user
             const response = await twitterSignIn.getAccessToken(requestToken, requestTokenSecret, oauthVerifier); 
 

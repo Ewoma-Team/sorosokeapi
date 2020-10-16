@@ -14,9 +14,9 @@ class UserSchema extends Schema {
       table.boolean('verified').defaultTo(false);
       table.boolean('photo').nullable()
       table.text('description').nullable()
-      table.string('user_name', 80).notNullable().unique()
-      table.string('email', 254).notNullable().unique()
-      table.string('password', 60).notNullable()
+      table.string('email', 254).nullable()
+      table.string('oauth_token', 254).nullable().unique()
+      table.string('oauth_token_secret', 254).nullable().unique()
       table.timestamps()
     })
   }
@@ -24,6 +24,7 @@ class UserSchema extends Schema {
   down () {
     this.drop('users')
   }
+
 }
 
 module.exports = UserSchema
