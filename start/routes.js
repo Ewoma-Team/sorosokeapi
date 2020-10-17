@@ -13,6 +13,10 @@
 |
 */
 
+//https://unruffled-kilby-8e1c19.netlify.app
+//http://127.0.0.1:8080
+//https://sorosoke.com.ng
+
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
@@ -20,12 +24,10 @@ Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
 
-Route.get('test', 'WebhookController.trigger');
-// Route.get('covid19/:country/:status', 'Covid19Controller.covid19CountryAndStatus')
-Route.post('c19/make-me-better', 'Covid19Controller.makeMeBetter')
-Route.post('c19/reachout', 'Covid19Controller.reachOut')
+Route.group(() => {
 
+  Route.get('twitter/auth/url', 'AuthenticateController.generateTwitterAuthUrl').formats(['json']);
 
-Route.get('twitter/auth/url', 'AuthenticateController.generateTwitterAuthUrl')
+  Route.get('twitter/auth/callback', 'AuthenticateController.storeUser').formats(['json']);
 
-Route.get('twitter/auth/callback', 'AuthenticateController.storeUser')
+}).prefix('api/v1')

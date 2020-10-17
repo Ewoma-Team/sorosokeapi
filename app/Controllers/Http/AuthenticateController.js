@@ -11,7 +11,7 @@ class AuthenticateController {
 
         const authUrl = `https://api.twitter.com/oauth/authorize?oauth_token=${result.requestToken}`
 
-        return response.status(200).json({authUrl});
+        return response.status(result.statusCode).json({success: true, info: result.info, authUrl});
     }
 
     async storeUser({request, auth, response}) {
@@ -24,18 +24,26 @@ class AuthenticateController {
             //Save to the Database
             const userData = await this.insertOrUpdateDatabase(result, auth) 
 
-            if(userData.status === 501) {
-                return response.status(userData.status).json({userData});
+            if(userData.statusCode === 501) {
+                return response.status(userData.statusCode).json({userData});
             }
     
-            return response.status(200).json({success: true, userData});
+            return response.status(userData.statusCode).json({success: true, info: userData.info, userData});
 
     }
 
     async insertOrUpdateDatabase(result, auth) {
         
-
         let userInsert = null;
+
+        if(!result.success) {  
+            return {
+                success: result.success,
+                statusCode: result.statusCode,
+                info: result.info,
+                hint: result.hint
+            }
+        }
 
         const {oauth_token, oauth_token_secret, user_id} = result.response;
 
@@ -75,7 +83,8 @@ class AuthenticateController {
             Object.assign(userInsert, {token});
 
             return {
-                status: 200,
+                statusCode: 200,
+                info: 'User Saved succesfully!',
                 userInsert
             }
 
@@ -83,9 +92,9 @@ class AuthenticateController {
 
             await trx.rollback()
             return {   error: false, 
-                       message: 'An unexpected error occured authenticating twitter account.', 
+                       info: 'An unexpected error occured authenticating twitter account.', 
                        hint: error.message, 
-                       status: 501 
+                       statusCode: 501 
                }
        }
     }

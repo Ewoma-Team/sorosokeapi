@@ -31,6 +31,7 @@ module.exports = {
 
                 return {
                     success: true,
+                    statusCode: 200,
                     info: 'Authentication Successful.',
                     requestToken,
                     requestTokenSecret
@@ -40,6 +41,7 @@ module.exports = {
             if(!response.oauth_callback_confirmed) {
                 return {
                     success: false,
+                    statusCode: 501,
                     info: 'Authentication not Succesful.',
                 }
             }
@@ -69,13 +71,17 @@ module.exports = {
 
             return {
                 success: true,
+                statusCode: 200,
+                info: 'Twitter Data Succesfully retrieved.',
                 response,
                 currentUser
             }
         }
         return {
             success: false,
-            info: 'Authentication not allowed.'
+            statusCode: 501,
+            info: 'Authentication not allowed.',
+            hint: 'The twitter authentication token is not valid or have expired.'
         }
     },
 
