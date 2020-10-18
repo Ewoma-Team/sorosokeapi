@@ -26,8 +26,12 @@ Route.get('/', () => {
 
 Route.group(() => {
 
-  Route.get('twitter/auth/url', 'AuthenticateController.generateTwitterAuthUrl').formats(['json']);
+  Route.get('twitter/auth/url', 'AuthenticateController.generateTwitterAuthUrl').formats(['json']); //Twitter Generate Auth Url
 
-  Route.get('twitter/auth/callback', 'AuthenticateController.storeUser').formats(['json']);
+  Route.get('twitter/auth/callback', 'AuthenticateController.storeUser').formats(['json']); //Twitter Fetch USer Data and Generate auth Token
+
+  Route.get('feeds/:page', 'FeedController.fetchFeeds').middleware(['auth:jwt']).formats(['json'])
+
+  Route.get('create/feed', 'FeedController.CreateFeeds').middleware(['auth:jwt']).formats(['json'])
 
 }).prefix('api/v1')
