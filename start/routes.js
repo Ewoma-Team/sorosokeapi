@@ -32,6 +32,7 @@ Route.group(() => {
 
   Route.get('feeds/:page', 'FeedController.fetchFeeds').middleware(['auth:jwt']).formats(['json'])
 
-  Route.get('create/feed', 'FeedController.CreateFeeds').middleware(['auth:jwt']).formats(['json'])
+  Route.post('create/feed', 'FeedController.createFeed').validator('CreateFeed').middleware(['auth:jwt']).formats(['json'])
+
 
 }).prefix('api/v1')

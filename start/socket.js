@@ -32,5 +32,11 @@ io.on('connection', function (socket) {
     socket.broadcast.emit("user-leave", this.username);
   })
 
+  //Trigger the creed feed controller and fire result response
+
+
 })
+
+const socketIoObject = io;
+module.exports.ioObject = socketIoObject;
 

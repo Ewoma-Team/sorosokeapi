@@ -10,5 +10,5 @@ tmp
 # The development sqlite file
 database/*.sqlite
 
-# ignore ewoma private
-config/ewoma.js
+# ignore client_secret.json google private
+config/client_secret.js

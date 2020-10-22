@@ -2,7 +2,10 @@
 const Feed = use('App/Models/Feed')
 const Database = use('Database')
 const CloudinaryUploadController = use('App/Controllers/Http/FileUpload/CloudinaryUploadController')
+const YoutubeVideoApiController = use('App/Controllers/Http/FileUpload/YoutubeVideoApiController')
 const Env = use('Env')
+const Socket = require('../../../start/socket')
+
 
 class FeedController {
 
@@ -11,11 +14,15 @@ class FeedController {
     //Get All Feeds 
     async fetchFeeds({response, params: { page }}) {
 
-        const feeds = await Feed.query().paginate(page)
+        const feeds = await Feed.query().with('user').orderBy('id','desc').paginate(page)
     
         response.status(200).json({
           success: true,
           info: 'Top 50 Feeds',
+          fileOrigin: {
+              imageOrigin: Env.get('CLOUDINARY_IMAGE_URL'),
+              videoOrigin: Env.get('CLOUDINARY_VIDEO_URL')
+            },
           feeds
         });
         
@@ -23,7 +30,9 @@ class FeedController {
 
     async createFeed ({request, auth, response}) {
 
-        
+        const youtubeUpload = new YoutubeVideoApiController
+        const cloudinaryUpload = new CloudinaryUploadController
+
         const trx = await Database.beginTransaction()
 
         try {
@@ -38,36 +47,78 @@ class FeedController {
                     info: 'An error occured, this might be a network issue or issue generating with the server, please refresh and try again'
                 })
           }
-          
-          const feedInfo = await Feed.create(request.post(), trx)
-    
-          const feedLink = `${Env.get('FRONTEND_URL')}/single-feed.html?feed-id=${feedId}`;
-    
-          Object.assign(customerInfo, code) //attach a code value for mail since verify_code is inaccesble 
-    
-          if(!mailOut.status) {
-              return {error: false, message: 'Please there was an error sending you a verification mail, this could be a bad network connection, please refresh and try again or contact support to report this issue.', hint: mailOut.hint, status:501}
-          }
+
+
+          //Upload file to youtube
+          const file = request.file('file_url', {
+                types: ['image', 'video'],
+                size: '35mb',
+                extnames: ['png', 'jpg', 'jpeg', 'mp4', 'avi', 'webm']
+          });
+
+            // console.log(file.type, file.extname)
+            let fileRes = null;
+            let file_type = null;
+
+            if(file.type === 'video') {
+                file_type = 'video';
+                fileRes = await cloudinaryUpload.handleUpload(file, "feeds", file.type);
+                // fileRes = await youtubeUpload.handleUpload(title, description, file, "feeds"); //Second Parameter is the file folder
+            }
+
+            if(file.type === 'image') {
+                file_type = 'image';
+                fileRes = await cloudinaryUpload.handleUpload(file, "feeds", file.type); //Second Parameter is the file folder
+            }
+
+            if(!fileRes.status) {
+                return response.status(fileRes.status_code).json({
+                    info:'An error occured while uploading file, please check your internet connection refresh and try again', 
+                    hint: fileRes.error.image_up_info
+                })
+            }
+
+            Object.assign(request.post(), {
+                user_id: auth.user.id,
+                feed_id: feedId,
+                file_type,
+                file_url: `${fileRes.image_up_info.public_id}.${fileRes.image_up_info.format}`,
+            }) 
+
+             const feedInfo = await Feed.create(request.post(), trx) //Save feed to database
+
+
+
+             Object.assign(feedInfo, {
+                fileOrigin: Env.get('CLOUDINARY_IMAGE_URL'),
+                user: auth.user
+            }) 
     
           trx.commit() //once done commit the transaction
-          
-          customerInfo.code = null; //Remove the code value from the payload
-          customerInfo.link = null; 
-    
-          return {success: true, message: `Hurray! Your registration was successful, please go to (${customer.email_default}) confirm, Thank you.`, customer: customerInfo, status: 201}
+
+
+          //Fire and Event to display new Feed added 
+          Socket.ioObject.emit('new-feed', feedInfo)
+            
+          return response.status(201).json({
+                success: true,
+                info: `Feed succesfully created`, 
+                feedInfo,
+            })
+
         } catch (error) {
     
           await trx.rollback()
-          return {error: false, message: 'An unexpected error occured when creating a customer.', hint: error.message, status:501}
+          return {error: false, info: 'An unexpected error occured when creating feed.', hint: error.message, status:501}
         }
     
     }
 
     async createFeedId () {
 
-        const verify_code = Math.floor(1000000000 + Math.random() * 9000000000);
+        const feedId = Math.floor(10000000000000000 + Math.random() * 90000000000000000);
 
-        const checkIfExist = await Customer.findBy('verify_code', verify_code)
+        const checkIfExist = await Feed.findBy('feed_id', feedId)
 
         if(checkIfExist) {
 
@@ -81,7 +132,7 @@ class FeedController {
 
         }
 
-        return verify_code;
+        return feedId;
     }
 
 }

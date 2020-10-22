@@ -4,14 +4,14 @@ const Cloudinary = use('App/Services/Cloudinary')
 
 class CloudinaryUploadController {
 
-    async handleUpload (file, folder) {
+    async handleUpload (file, folder,resource_type) {
         //Connect to cloudinary Storage 
         try {
             if(file){
-                let cloudinary_response = await Cloudinary.upload(file, folder)
+                let cloudinary_response = await Cloudinary.upload(file, folder, resource_type)
                 return cloudinary_response;
             }
-            return {status: false, error: 'Please upload an image', status_code: 400};
+            return {status: false, error: 'Please upload a video or image', status_code: 400};
         } catch (error) {
             return {status: false, error, status_code: 501}
         }

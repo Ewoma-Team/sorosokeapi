@@ -12,7 +12,7 @@ class UserSchema extends Schema {
       table.string('screen_name').notNullable()
       table.string('location').nullable()
       table.boolean('verified').defaultTo(false);
-      table.boolean('photo').nullable()
+      table.string('photo').nullable()
       table.text('description').nullable()
       table.string('email', 254).nullable()
       table.string('oauth_token', 254).nullable().unique()

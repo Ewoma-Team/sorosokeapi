@@ -5,6 +5,9 @@ const Model = use('Model')
 
 /** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash')
+const dayjs = use("dayjs")
+const relativeTime = use("dayjs/plugin/relativeTime")
+dayjs.extend(relativeTime);
 
 class User extends Model {
   static boot () {
@@ -29,6 +32,10 @@ class User extends Model {
     return 'YYYY-MM-DD HH:mm:ss'
   }
 
+  getHumanReadableTime ({created_at}) {
+    return dayjs(created_at).fromNow()
+  }
+
   /**
    * A relationship on tokens is required for auth to
    * work. Since features like `refreshTokens` or
@@ -41,6 +48,10 @@ class User extends Model {
    */
   tokens () {
     return this.hasMany('App/Models/Token')
+  }
+
+  feeds () {
+      return this.hasMany('App/Models/Feed')
   }
 }
 

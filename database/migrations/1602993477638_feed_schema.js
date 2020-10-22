@@ -9,14 +9,13 @@ class FeedSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned()
       table.string('feed_id').notNullable().unique().index()
-      table.string('file_type').notNullable();
-      table.string('file_url').notNullable();
-      table.string('title').notNullable();
-      table.string('location').notNullable();
-      table.text('description').nullable();
+      table.string('file_type').notNullable()
+      table.string('file_url').notNullable()
+      table.string('location').nullable()
+      table.text('description').nullable()
       table.timestamps()
 
-      table.foreign('user_id').references('user.id')
+      table.foreign('user_id').references('users.id').onDelete('cascade')
 
     })
   }

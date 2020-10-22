@@ -10,15 +10,25 @@ cloudinary.config({
 
 module.exports ={
 
-    upload: async (file, folder) => {
+    upload: async (file, folder, resource_type) => {
 
         return new Promise(async (resolve, reject) => {
 
             try {
 
-                let response = await cloudinary.uploader.upload(file.tmpPath, {folder: `${Env.get('CLOUDINARY_APP_FOLDER')}/${folder}`})
-                
-                resolve({status: true, image_up_info: response, status_code: 200})
+                let response = await cloudinary.uploader.upload(file.tmpPath, {
+                    resource_type,
+                    quality: 50,
+                    folder: `${Env.get('CLOUDINARY_APP_FOLDER')}/${folder}`,
+                    chunk_size: 6000000,
+                    eager: [
+                        { width: 300, height: 300, crop: "pad", audio_codec: "none" }, 
+                        { width: 160, height: 100, crop: "crop", gravity: "south", audio_codec: "none" } 
+                    ],                                   
+                    eager_async: true
+                })
+
+                resolve({status: true, image_up_info: response, status_code: 200})                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
             } catch (error) {
         

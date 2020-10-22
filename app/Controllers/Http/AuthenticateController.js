@@ -47,9 +47,13 @@ class AuthenticateController {
 
         const {oauth_token, oauth_token_secret, user_id} = result.response;
 
+        console.log(result.currentUser)
+
         const { name, screen_name, location, 
                 profile_image_url_https, 
                 verified, description } = result.currentUser;
+
+        console.log(profile_image_url_https)
         
         const trx = await Database.beginTransaction()
 
@@ -74,6 +78,8 @@ class AuthenticateController {
             userInsert.oauth_token_secret = oauth_token_secret
             
             await userInsert.save(trx) //Store to database
+
+            console.log(userInsert, 'jrag')
 
             await trx.commit()
 
