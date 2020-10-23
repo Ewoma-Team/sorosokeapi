@@ -113,6 +113,10 @@ class AuthenticateController {
 
         return token
     }
+
+    async checkSession ({response}) {
+        return response.status(200).json({success: true, info: 'Token still valida'});
+    }
 }
 
 module.exports = AuthenticateController

@@ -26,6 +26,8 @@ Route.get('/', () => {
 
 Route.group(() => {
 
+  Route.get('check/session', 'AuthenticateController.checkSession').formats(['json']); //Check if the users token is valid
+
   Route.get('twitter/auth/url', 'AuthenticateController.generateTwitterAuthUrl').formats(['json']); //Twitter Generate Auth Url
 
   Route.get('twitter/auth/callback', 'AuthenticateController.storeUser').formats(['json']); //Twitter Fetch USer Data and Generate auth Token
