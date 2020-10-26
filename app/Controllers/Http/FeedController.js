@@ -14,7 +14,7 @@ class FeedController {
     //Get All Feeds 
     async fetchFeeds({response, params: { page }}) {
 
-        const feeds = await Feed.query().with('user').orderBy('id','desc').paginate(page)
+        const feeds = await Feed.query().with('user').orderBy('created_at','desc').paginate(page)
     
         response.status(200).json({
           success: true,
@@ -26,7 +26,7 @@ class FeedController {
           feeds
         });
         
-    }
+    }a
 
     async createFeed ({request, auth, response}) {
 
