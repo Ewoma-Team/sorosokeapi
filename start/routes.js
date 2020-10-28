@@ -36,5 +36,7 @@ Route.group(() => {
 
   Route.post('create/feed', 'FeedController.createFeed').validator('CreateFeed').middleware(['auth:jwt']).formats(['json'])
 
+  Route.post('public-room/chat', 'PublicRoomController.chat').validator('Chat').middleware(['auth:jwt']).formats(['json'])
+
 
 }).prefix('api/v1')

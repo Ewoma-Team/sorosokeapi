@@ -1,8 +1,7 @@
 'use strict'
 const Feed = use('App/Models/Feed')
 const Database = use('Database')
-const CloudinaryUploadController = use('App/Controllers/Http/FileUpload/CloudinaryUploadController')
-const YoutubeVideoApiController = use('App/Controllers/Http/FileUpload/YoutubeVideoApiController')
+const UploadFileTriggerController = use('App/Controllers/Http/FileUpload/UploadFileTriggerController')
 const Env = use('Env')
 const Socket = require('../../../start/socket')
 
@@ -30,13 +29,11 @@ class FeedController {
 
     async createFeed ({request, auth, response}) {
 
-        const youtubeUpload = new YoutubeVideoApiController
-        const cloudinaryUpload = new CloudinaryUploadController
+        const uploadFileTriggerController = new UploadFileTriggerController
 
         const trx = await Database.beginTransaction()
 
         try {
-
           //Generate a verification code
           const feedId = await this.createFeedId();
 
@@ -48,54 +45,33 @@ class FeedController {
                 })
           }
 
-
-          //Upload file to youtube
+          //Upload file to Cloudiary or youtube
           const file = request.file('file_url', {
                 types: ['image', 'video'],
                 size: '35mb',
                 extnames: ['png', 'jpg', 'jpeg', 'mp4', 'avi', 'webm']
           });
 
-            // console.log(file.type, file.extname)
-            let fileRes = null;
-            let file_type = null;
+          const uploadObject = await uploadFileTriggerController.fileUpload(file, "feeds");
 
-            if(file.type === 'video') {
-                file_type = 'video';
-                fileRes = await cloudinaryUpload.handleUpload(file, "feeds", file.type);
-                // fileRes = await youtubeUpload.handleUpload(title, description, file, "feeds"); //Second Parameter is the file folder
-            }
-
-            if(file.type === 'image') {
-                file_type = 'image';
-                fileRes = await cloudinaryUpload.handleUpload(file, "feeds", file.type); //Second Parameter is the file folder
-            }
-
-            if(!fileRes.status) {
-                return response.status(fileRes.status_code).json({
-                    info:'An error occured while uploading file, please check your internet connection refresh and try again', 
-                    hint: fileRes.error.image_up_info
-                })
-            }
-
-            Object.assign(request.post(), {
+           Object.assign(request.post(), {
                 user_id: auth.user.id,
                 feed_id: feedId,
-                file_type,
-                file_url: `${fileRes.image_up_info.public_id}.${fileRes.image_up_info.format}`,
+                file_type: uploadObject.file_type,
+                file_url: uploadObject.file_url
             }) 
 
-             const feedInfo = await Feed.create(request.post(), trx) //Save feed to database
-
-
-
-             Object.assign(feedInfo, {
-                fileOrigin: Env.get('CLOUDINARY_IMAGE_URL'),
+            const feedInfo = await Feed.create(request.post(), trx) //Save feed to database 
+          
+            Object.assign(feedInfo, {
+                fileOrigin: {
+                    imageOrigin: Env.get('CLOUDINARY_IMAGE_URL'),
+                    videoOrigin: Env.get('CLOUDINARY_VIDEO_URL')
+                },
                 user: auth.user
-            }) 
+            })
     
           trx.commit() //once done commit the transaction
-
 
           //Fire and Event to display new Feed added 
           Socket.ioObject.emit('new-feed', feedInfo)

@@ -98,7 +98,7 @@ class AuthenticateController {
 
             await trx.rollback()
             return {   error: false, 
-                       info: 'An unexpected error occured authenticating twitter account.', 
+                       info: 'An unexpected error occured authenticating twitter account, please refresh and try again contact support if issue persit.', 
                        hint: error.message, 
                        statusCode: 501 
                }
